@@ -172,6 +172,10 @@ async def set_profile(name: str) -> None:
 
 The harness uses short-lived clients for control calls (`async with httpx.AsyncClient(timeout=30) as client:`) and `answer.raise_for_status()`, which turns an error status into an exception.
 
+### Where the tests and the experiments use httpx
+
+`libs/chassis/tests/unit/test_tracing_observability_upstream.py` tests `HopClient` over `httpx.MockTransport`. `tests/system/chain.py` and `test_chain_in_process.py` use `httpx.ASGITransport`. `tests/system/harness.py` and `experiments.py` use `httpx.AsyncClient` for the load, the profile switch, fault injection and metric reads. `tests/e2e/test_chain.py` calls the running containers. All are read line by line in `pytest.md`.
+
 ## Try it yourself
 
 1. Make a fake server and call it asynchronously:

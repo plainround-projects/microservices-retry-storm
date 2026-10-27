@@ -98,6 +98,10 @@ def admin_router(holder: ProfileHolder | None, store: SpanStore) -> APIRouter:
 
 `ProfileBody` has one field. `Profile(body.name)` converts the text into the enumeration and raises `ValueError` for an unknown name, which the route turns into a 422 with a clear message.
 
+### Where the tests use these models
+
+The `test_api_and_settings.py` files of the gateway, search, pricing and stock services post JSON bodies and expect 422 for invalid ones (an empty query, an out-of-range fault rate); `libs/chassis/tests/unit/test_tracing_observability_upstream.py` posts a profile name and expects 422 for an unknown one. See `pytest.md`.
+
 ## Try it yourself
 
 1. Validate a good and a bad search body:

@@ -221,6 +221,14 @@ See `asyncio.md`: `services/stock/src/stock/interfaces/bootstrap.py` defines a l
 
 `httpx.ASGITransport(app=app)` lets an HTTP client call a FastAPI app directly in memory, with no network. `tests/system/chain.py` builds all four real apps this way, each calling the next through an in-memory transport, so the mechanisms of the lesson can be tested in one process (see `httpx.md`).
 
+### Where the tests use FastAPI
+
+- `services/gateway/tests/unit/interfaces/test_api_and_settings.py`, `services/search/tests/unit/interfaces/test_api_and_settings.py`, `services/pricing/tests/unit/interfaces/test_api_and_settings.py` and `services/stock/tests/unit/interfaces/test_api_and_settings.py` build each real app around fakes and call it with `TestClient`.
+- `libs/chassis/tests/unit/test_tracing_observability_upstream.py` builds a small `FastAPI()` with the real middleware, the metrics route and the admin router.
+- `tests/system/chain.py` builds all four real apps and connects them with `httpx.ASGITransport`; `tests/system/test_chain_in_process.py` drives that chain.
+
+All are read line by line in `pytest.md`.
+
 ## Try it yourself
 
 1. Call the real health route in memory:

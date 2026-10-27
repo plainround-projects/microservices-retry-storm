@@ -126,6 +126,10 @@ async def pool():
 
 `@pytest_asyncio.fixture` is the async version of a pytest fixture (see `pytest-asyncio.md`): code before `yield` sets up (here: `await create_pool(...)`), code after it cleans up (`await pool.close()`).
 
+### Where the integration test uses psycopg
+
+`services/stock/tests/integration/conftest.py` builds the async pool as the application role, and `test_postgres_stock.py` reads the seeded stock and checks that an `UPDATE` raises `errors.InsufficientPrivilege` (`from psycopg import errors`). Both are read line by line in `pytest.md`.
+
 ## Try it yourself
 
 These need the stack (`make up`) and the passwords from `.env`.
