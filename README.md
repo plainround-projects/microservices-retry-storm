@@ -167,6 +167,12 @@ Only what the lesson scopes out, plus where this build differs from the lesson's
 
 - `make check` (format check, lint, strict types, import rules, unit tests with at least 95 percent coverage of the domain and application layers and of `resilience`, and the in-process chain tests), `make audit`, `make test-integration` and `make test-system` pass; the last two ran against the Docker stack.
 - Docker on the build machine was unstable during the session (its disk filled and the virtual disk went read-only; later it stopped responding for stretches). The amplification and slowdown measurements of the naive profile are from the four services run as host processes against a local PostgreSQL, because the container run of those two was taken while the machine was starved and was discarded; every other measurement is from the Docker stack. The same code ran in both.
+- The naive profile did not recover within the 240 s cap in the host run (the failure is sustained by the retries themselves); that is recorded as measured, not as a pass of a time limit.
+
+Pending capacity:
+
+- pending capacity: run `make up && make test-system` after Docker Desktop is restarted with free disk (Docker.raw was at its 60 GiB cap on 2026-10-28). It would re-take the two naive-profile experiments (`amplification-naive`, `slowdown-naive`) inside the containers on an unloaded machine; the committed numbers for those two come from host processes.
+- Not run: the fresh-clone walkthrough with containers. `make check` passes from the working tree.
 
 ## Project structure
 
