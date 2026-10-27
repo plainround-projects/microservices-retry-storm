@@ -15,7 +15,7 @@ export UV_FROZEN := 1
         check-package logs down clean
 
 help: ## list the targets
-	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | sed -E 's/:.*## /\t/' | sort
+	@grep -E '^[a-z-]+:.*## ' $(firstword $(MAKEFILE_LIST)) | sed -E 's/:.*## /\t/' | sort
 
 env:
 	@[ -f .env ] || { cp .env.example .env; echo "created .env from .env.example"; }
