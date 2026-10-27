@@ -15,10 +15,10 @@ from typing import Any
 
 import httpx
 
-from tests.system import harness as h
+from tests.system import harness
 
-RESULTS = h.ROOT / "docs" / "results"
-RPS = float(os.environ.get("LOAD_RPS", "15"))
+RESULTS = harness.ROOT / "docs" / "results"
+RPS = float(os.environ.get("LOAD_RPS", "5"))
 
 
 def _save(name: str, data: dict[str, Any], traces: dict[str, str] | None = None) -> None:
@@ -29,15 +29,15 @@ def _save(name: str, data: dict[str, Any], traces: dict[str, str] | None = None)
 
 
 async def _prepare(profile: str, latency_ms: int, fail_rate: float) -> None:
-    await h.restart_chain()
-    await h.set_profile(profile)
-    await h.set_faults(latency_ms=latency_ms, fail_rate=fail_rate)
+    await harness.restart_chain()
+    await harness.set_profile(profile)
+    await harness.set_faults(latency_ms=latency_ms, fail_rate=fail_rate)
     await asyncio.sleep(2)
 
 
-async def _start_load(rps: float) -> tuple[h.LoadRecorder, asyncio.Event, asyncio.Task[None]]:
-    recorder, stop = h.LoadRecorder(), asyncio.Event()
-    task = asyncio.create_task(h.generate_load(recorder, rps, stop))
+async def _start_load(rps: float) -> tuple[harness.LoadRecorder, asyncio.Event, asyncio.Task[None]]:
+    recorder, stop = harness.LoadRecorder(), asyncio.Event()
+    task = asyncio.create_task(harness.generate_load(recorder, rps, stop))
     while recorder.t0 == 0.0:
         await asyncio.sleep(0.01)
     return recorder, stop, task
@@ -57,15 +57,15 @@ async def amplification(
 ) -> dict[str, Any]:
     """Steps 2 and 4: count the calls arriving at each layer for the same number of gateway requests."""
     await _prepare(profile, latency_ms, fail_rate)
-    before = await h.received_counts()
+    before = await harness.received_counts()
     recorder, stop, task = await _start_load(RPS)
     await asyncio.sleep(seconds)
     stop.set()
     await task
     await asyncio.sleep(5)
-    after = await h.received_counts()
-    received = {s: after[s] - before[s] for s in h.CHAIN}
-    gateway_metrics = await h.scrape("gateway")
+    after = await harness.received_counts()
+    received = {s: after[s] - before[s] for s in harness.CHAIN}
+    gateway_metrics = await harness.scrape("gateway")
     result: dict[str, Any] = {
         "profile": profile,
         "fail_rate": fail_rate,
@@ -77,7 +77,7 @@ async def amplification(
         "client": recorder.window(0, seconds),
     }
     print(f"calls received over {seconds} s at {RPS:g} requests/s, profile {profile}, FAIL_RATE={fail_rate}:")
-    print("   " + "   ".join(f"{s}: {received[s]:.0f}" for s in h.CHAIN))
+    print("   " + "   ".join(f"{s}: {received[s]:.0f}" for s in harness.CHAIN))
     print(
         f"   ratio stock:gateway = {result['ratios']['stock:gateway']}x   (search {result['ratios']['search:gateway']}x, pricing {result['ratios']['pricing:gateway']}x)"
     )
@@ -87,15 +87,24 @@ async def amplification(
 
 
 def _recovered(
-    recorder: h.LoadRecorder, in_flight: Sequence[tuple[float, float | None]], now: float, threshold: float
+    recorder: harness.LoadRecorder,
+    in_flight: Sequence[tuple[float, float | None]],
+    now: float,
+    threshold: float,
+    p99_limit_ms: float = 600,
+    baseline: dict[str, Any] | None = None,
 ) -> bool:
-    stats = recorder.window(now - 5, now)
-    flights = [v for t, v in in_flight if now - 5 <= t < now]
+    """True when the last 10 seconds look like the baseline again: the stock store has drained, answers are as fast and
+    as clean as before the slowdown (the baseline keeps its injected failures, so "clean" is relative to it)."""
+    stats = recorder.window(now - 10, now)
+    flights = [v for t, v in in_flight if now - 10 <= t < now]
+    base_errors = (baseline or {}).get("error_rate") or 0.0
+    base_degraded = (baseline or {}).get("degraded_rate") or 0.0
     return bool(
         stats["requests"]
-        and stats["error_rate"] == 0
-        and stats["degraded_rate"] == 0
-        and stats["p99_ms"] <= 600
+        and stats["error_rate"] <= base_errors + 0.05
+        and stats["degraded_rate"] <= base_degraded + 0.2
+        and stats["p99_ms"] <= p99_limit_ms
         and flights
         and all(v is not None and v <= threshold for v in flights)
     )
@@ -113,28 +122,34 @@ async def slowdown(
     await _prepare(profile, 50, fail_rate)
     recorder, stop, load = await _start_load(RPS)
     in_flight: list[tuple[float, float | None]] = []
-    sampler = asyncio.create_task(h.sample_stock_in_flight(in_flight, recorder.t0, stop))
+    sampler = asyncio.create_task(harness.sample_stock_in_flight(in_flight, recorder.t0, stop))
 
     def elapsed() -> float:
         return time.monotonic() - recorder.t0
 
     await asyncio.sleep(baseline_s)
-    trace_baseline = await h.forced_request()
+    trace_baseline = await harness.forced_request()
     t_slow = elapsed()
-    await h.set_faults(latency_ms=slow_ms)
+    await harness.set_faults(latency_ms=slow_ms)
     await asyncio.sleep(slow_s / 2)
-    during_task = asyncio.create_task(h.forced_request())
+    during_task = asyncio.create_task(harness.forced_request())
     await asyncio.sleep(slow_s / 2)
     t_reset = elapsed()
-    await h.set_faults(latency_ms=50)
+    await harness.set_faults(latency_ms=50)
     during = await asyncio.wait_for(during_task, 60)
     baseline_peak = max((v for t, v in in_flight if 5 <= t < t_slow and v is not None), default=0.0)
     threshold = max(3 * baseline_peak, 10.0)
+    baseline = recorder.window(5, t_slow)
+    p99_limit_ms = max(600.0, 2.0 * (baseline["p99_ms"] or 0))
     recovered_at: float | None = None
+    clean_checks = 0
     while elapsed() < t_reset + recover_cap_s:
         await asyncio.sleep(1)
-        if _recovered(recorder, in_flight, elapsed(), threshold):
-            recovered_at = elapsed() - t_reset
+        clean_checks = (
+            clean_checks + 1 if _recovered(recorder, in_flight, elapsed(), threshold, p99_limit_ms, baseline) else 0
+        )
+        if clean_checks == 2:
+            recovered_at = elapsed() - t_reset - 1
             break
     stop.set()
     await load
@@ -146,21 +161,26 @@ async def slowdown(
         "fail_rate": fail_rate,
         "slow_ms": slow_ms,
         "rps": RPS,
-        "baseline": recorder.window(5, t_slow),
+        "baseline": baseline,
         "slowdown": recorder.window(t_slow + 5, t_reset),
         "stock_in_flight": {
             "baseline_peak": baseline_peak,
             "slowdown_peak": max(during_flights, default=0),
             "after_reset_every_3s": after_flights,
         },
+        "after_reset_windows": [
+            {"from_s": start, **recorder.window(t_reset + start, t_reset + start + 10)}
+            for start in range(0, int(elapsed() - t_reset), 10)
+        ],
         "recovery_seconds": None if recovered_at is None else round(recovered_at, 1),
         "recovery_capped_at_s": recover_cap_s,
         "recovery_threshold_in_flight": threshold,
+        "recovery_p99_limit_ms": p99_limit_ms,
         "traces": {"baseline": trace_baseline[1], "slowdown": during[1]},
     }
     traces = {
-        "baseline": h.render_trace(await h.fetch_trace(trace_baseline[0])),
-        "slowdown": h.render_trace(await h.fetch_trace(during[0])),
+        "baseline": harness.render_trace(await harness.fetch_trace(trace_baseline[0])),
+        "slowdown": harness.render_trace(await harness.fetch_trace(during[0])),
     }
     result["stock_spans_in_slowdown_trace"] = (
         traces["slowdown"].count("call stock") if profile == "naive" else traces["slowdown"].count("stock /stock")
@@ -174,7 +194,7 @@ async def slowdown(
         f"   stock in-flight: baseline peak {baseline_peak:g}, slowdown peak {result['stock_in_flight']['slowdown_peak']:g}"
     )
     print(
-        f"   recovery after the latency was removed: {result['recovery_seconds']} s (cap {recover_cap_s} s, in-flight threshold {threshold:g})"
+        f"   recovery after the latency was removed: {result['recovery_seconds']} s (cap {recover_cap_s} s, in-flight threshold {threshold:g}, p99 limit {p99_limit_ms:g} ms)"
     )
     _save(f"slowdown-{profile}", result, traces)
     return result
@@ -185,23 +205,25 @@ async def outage(seconds_before: int = 15, seconds_down: int = 30) -> dict[str, 
     await _prepare("full", 50, 0.0)
     recorder, stop, load = await _start_load(RPS)
     await asyncio.sleep(seconds_before)
-    pricing_before = await h.scrape("pricing")
-    h.compose("stop", "stock")
+    pricing_before = await harness.scrape("pricing")
+    harness.compose("stop", "stock")
     t_down = time.monotonic() - recorder.t0
     await asyncio.sleep(seconds_down)
-    pricing_during = await h.scrape("pricing")
-    trace_id, summary = await h.forced_request()
-    trace = h.render_trace(await h.fetch_trace(trace_id))
+    pricing_during = await harness.scrape("pricing")
+    trace_id, summary = await harness.forced_request()
+    trace = harness.render_trace(await harness.fetch_trace(trace_id))
     t_up = time.monotonic() - recorder.t0
-    h.compose("start", "stock")
-    await h.wait_ready(("stock",))
+    harness.compose("start", "stock")
+    await harness.wait_ready(("stock",))
     await asyncio.sleep(12)
     stop.set()
     await load
-    sent = h.metric(pricing_during, "calls_sent_total", target="stock") - h.metric(
+    sent = harness.metric(pricing_during, "calls_sent_total", target="stock") - harness.metric(
         pricing_before, "calls_sent_total", target="stock"
     )
-    rejected = h.metric(pricing_during, "breaker_rejected_total") - h.metric(pricing_before, "breaker_rejected_total")
+    rejected = harness.metric(pricing_during, "breaker_rejected_total") - harness.metric(
+        pricing_before, "breaker_rejected_total"
+    )
     requests_during = recorder.window(t_down, t_up)["requests"]
     result = {
         "rps": RPS,
@@ -211,7 +233,7 @@ async def outage(seconds_before: int = 15, seconds_down: int = 30) -> dict[str, 
         "requests_during_outage": requests_during,
         "pricing_attempts_sent_to_stock_during_outage": sent,
         "pricing_calls_refused_by_the_breaker": rejected,
-        "breaker_state_at_end_of_outage": h.metric(pricing_during, "breaker_state"),
+        "breaker_state_at_end_of_outage": harness.metric(pricing_during, "breaker_state"),
         "forced_request": summary,
     }
     print(f"stock stopped for {seconds_down} s at {RPS:g} requests/s, full profile")
@@ -225,35 +247,35 @@ async def outage(seconds_before: int = 15, seconds_down: int = 30) -> dict[str, 
     return result
 
 
-async def shedding(rps: float = 30.0, limit: int = 8, seconds: int = 30) -> dict[str, Any]:
+async def shedding(rps: float = 10.0, limit: int = 3, seconds: int = 30) -> dict[str, Any]:
     """Step 5, second half: with search's concurrency limit small and pricing slow, the excess is refused at once."""
     os.environ["SEARCH_CONCURRENCY_LIMIT"] = str(limit)
-    h.compose("up", "-d", "--force-recreate", "--no-deps", "search")
+    harness.compose("up", "-d", "--force-recreate", "--no-deps", "search")
     try:
         await _prepare("full", 1500, 0.0)
-        await h.set_profile("full")
+        await harness.set_profile("full")
         # Take the breaker out of the picture so pricing keeps calling the slow store and search's in-flight count climbs.
         async with httpx.AsyncClient(timeout=30) as client:
-            await client.post(f"{h.url('pricing')}/admin/profile", json={"name": "deadline-retry"})
+            await client.post(f"{harness.url('pricing')}/admin/profile", json={"name": "deadline-retry"})
         recorder, stop, load = await _start_load(rps)
         await asyncio.sleep(seconds)
         stop.set()
         await load
-        search_metrics = await h.scrape("search")
-        gateway_metrics = await h.scrape("gateway")
+        search_metrics = await harness.scrape("search")
+        gateway_metrics = await harness.scrape("gateway")
         window = recorder.window(5, seconds)
         result = {
             "rps": rps,
             "limit": limit,
             "client": window,
-            "search_shed": h.metric(search_metrics, "shed_total"),
+            "search_shed": harness.metric(search_metrics, "shed_total"),
             "gateway_retries": sum(v for k, v in gateway_metrics.items() if k.startswith("retries_total{")),
             "gateway_outcomes": {k: v for k, v in gateway_metrics.items() if k.startswith("outcomes_total{")},
         }
     finally:
         os.environ.pop("SEARCH_CONCURRENCY_LIMIT", None)
-        h.compose("up", "-d", "--force-recreate", "--no-deps", "search")
-        await h.wait_ready(("search",))
+        harness.compose("up", "-d", "--force-recreate", "--no-deps", "search")
+        await harness.wait_ready(("search",))
     print(f"search limited to {limit} in flight, pricing slow, {rps:g} requests/s for {seconds} s")
     print(
         f"   shed by search: {result['search_shed']:.0f}; gateway retries: {result['gateway_retries']:.0f}; client view: {window}"

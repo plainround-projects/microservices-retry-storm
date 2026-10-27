@@ -1,0 +1,28 @@
+{
+  "profile": "deadline-retry",
+  "fail_rate": 0.3,
+  "latency_ms": 50,
+  "rps": 5.0,
+  "received": {
+    "gateway": 226.0,
+    "search": 226.0,
+    "pricing": 226.0,
+    "stock": 226.0
+  },
+  "ratios": {
+    "search:gateway": 1.0,
+    "pricing:gateway": 1.0,
+    "stock:gateway": 1.0
+  },
+  "gateway_retries": 0,
+  "client": {
+    "requests": 225,
+    "p50_ms": 158,
+    "p99_ms": 1079,
+    "error_rate": 0.0,
+    "degraded_rate": 0.2622,
+    "statuses": {
+      "200": 225
+    }
+  }
+}

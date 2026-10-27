@@ -1,0 +1,28 @@
+gateway /search        +     0.0 ms    6012.1 ms  [503]
+  call search            +     0.3 ms    2003.1 ms  [timeout] attempt=1
+    search /search         +    58.1 ms    6077.4 ms  [502]
+      call pricing           +    58.4 ms    2055.5 ms  [timeout] attempt=1
+      call pricing           +  2114.5 ms    2006.4 ms  [timeout] attempt=2
+      call pricing           +  4121.1 ms    2012.9 ms  [timeout] attempt=3
+  call search            +  2003.5 ms    2004.4 ms  [timeout] attempt=2
+    search /search         +  2010.3 ms    6024.6 ms  [502]
+      call pricing           +  2016.4 ms    2007.7 ms  [timeout] attempt=1
+      call pricing           +  4024.3 ms    2003.3 ms  [timeout] attempt=2
+      call pricing           +  6027.7 ms    2007.1 ms  [timeout] attempt=3
+  call search            +  4008.1 ms    2003.7 ms  [timeout] attempt=3
+    search /search         +  4025.4 ms    6176.0 ms  [502]
+      call pricing           +  4025.5 ms    2004.3 ms  [timeout] attempt=1
+      call pricing           +  6029.9 ms    2005.9 ms  [timeout] attempt=2
+      call pricing           +  8035.9 ms    2165.3 ms  [timeout] attempt=3
+stock /stock           +  7265.3 ms     410.7 ms  [400]
+stock /stock           +  7356.1 ms     677.6 ms  [400]
+stock /stock           +  7357.0 ms     677.4 ms  [400]
+stock /stock           + 13534.0 ms   10743.3 ms  [200]
+stock /stock           + 13534.5 ms   10743.6 ms  [200]
+stock /stock           + 14325.1 ms   10050.2 ms  [200]
+stock /stock           + 15681.9 ms    8699.4 ms  [200]
+stock /stock           + 15683.1 ms    8701.5 ms  [500]
+stock /stock           + 24731.3 ms     609.9 ms  [200]
+stock /stock           + 24731.3 ms     597.5 ms  [500]
+stock /stock           + 24853.6 ms    1120.1 ms  [200]
+stock /stock           + 24853.8 ms    1131.2 ms  [200]

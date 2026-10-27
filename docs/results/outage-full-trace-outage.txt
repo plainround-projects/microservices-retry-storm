@@ -1,0 +1,5 @@
+gateway /search        +     0.0 ms      67.1 ms  [200]
+  call search            +     1.0 ms      62.2 ms  [200] attempt=1
+    search /search         +    26.1 ms      28.7 ms  [200]
+      call pricing           +    26.5 ms      27.6 ms  [200] attempt=1
+        pricing /price         +    40.7 ms       8.5 ms  [200]
