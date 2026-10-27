@@ -1,7 +1,7 @@
-gateway /search        +     0.0 ms     183.7 ms  [200]
-  call search            +     0.5 ms     183.0 ms  [200] attempt=1
-    search /search         +    42.6 ms     138.2 ms  [200]
-      call pricing           +    43.1 ms     137.2 ms  [200] attempt=1
-        pricing /price         +    72.8 ms     100.8 ms  [200]
-          call stock             +    72.9 ms     100.2 ms  [200] attempt=1
-            stock /stock           +    88.6 ms      59.6 ms  [200]
+gateway /search        +     0.0 ms      64.9 ms  [200]
+  call search            +     0.4 ms      64.1 ms  [200] attempt=1
+    search /search         +     2.1 ms      61.5 ms  [200]
+      call pricing           +     2.3 ms      60.6 ms  [200] attempt=1
+        pricing /price         +     3.4 ms      58.0 ms  [200]
+          call stock             +     3.6 ms      56.5 ms  [200] attempt=1
+            stock /stock           +     4.5 ms      54.2 ms  [200]

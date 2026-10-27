@@ -5,8 +5,8 @@
   "rps": 5.0,
   "baseline": {
     "requests": 77,
-    "p50_ms": 147,
-    "p99_ms": 1713,
+    "p50_ms": 98,
+    "p99_ms": 330,
     "error_rate": 0.0,
     "degraded_rate": 0.0,
     "statuses": {
@@ -15,8 +15,8 @@
   },
   "slowdown": {
     "requests": 175,
-    "p50_ms": 6051,
-    "p99_ms": 6358,
+    "p50_ms": 6013,
+    "p99_ms": 6108,
     "error_rate": 0.9886,
     "degraded_rate": 0.0,
     "statuses": {
@@ -25,199 +25,227 @@
     }
   },
   "stock_in_flight": {
-    "baseline_peak": 2.0,
-    "slowdown_peak": 961.0,
+    "baseline_peak": 1.0,
+    "slowdown_peak": 3405.0,
     "after_reset_every_3s": [
       [
         0,
-        896.0
+        3421.0
       ],
       [
         3,
-        420.0
+        3425.0
       ],
       [
         7,
-        408.0
+        3316.0
       ],
       [
         10,
-        18.0
+        2821.0
       ],
       [
-        13,
-        0.0
+        14,
+        2673.0
       ],
       [
-        16,
-        0.0
+        17,
+        2295.0
       ],
       [
-        19,
-        0.0
+        21,
+        2351.0
       ],
       [
-        22,
-        0.0
+        25,
+        2183.0
       ],
       [
-        26,
-        0.0
+        28,
+        1873.0
       ],
       [
-        29,
-        0.0
+        32,
+        1510.0
       ],
       [
-        34,
-        0.0
+        35,
+        1268.0
       ],
       [
-        37,
-        0.0
+        38,
+        1003.0
       ],
       [
-        40,
-        0.0
+        41,
+        582.0
       ],
       [
-        44,
-        0.0
+        45,
+        270.0
       ],
       [
-        47,
-        0.0
+        48,
+        4.0
       ],
       [
         51,
-        0.0
+        3.0
       ],
       [
-        55,
-        0.0
+        54,
+        92.0
       ],
       [
-        58,
-        0.0
+        57,
+        1.0
       ],
       [
-        62,
-        0.0
+        60,
+        284.0
       ],
       [
-        65,
-        0.0
+        63,
+        1.0
       ],
       [
-        69,
-        0.0
+        66,
+        1.0
       ],
       [
-        72,
-        0.0
+        70,
+        13.0
+      ],
+      [
+        73,
+        1.0
       ],
       [
         76,
-        0.0
+        388.0
       ],
       [
         79,
+        8.0
+      ],
+      [
+        82,
         0.0
       ],
       [
-        83,
+        85,
+        28.0
+      ],
+      [
+        88,
         0.0
       ],
       [
-        87,
+        92,
         0.0
       ],
       [
-        90,
+        95,
         0.0
       ],
       [
-        94,
+        98,
         0.0
       ],
       [
-        97,
+        101,
+        4.0
+      ],
+      [
+        104,
         0.0
       ],
       [
-        100,
+        107,
         0.0
       ],
       [
-        103,
+        110,
         0.0
       ],
       [
-        109,
+        114,
         0.0
       ],
       [
-        112,
+        117,
         0.0
       ],
       [
-        116,
-        0.0
+        120,
+        50.0
       ],
       [
-        121,
-        0.0
+        123,
+        73.0
       ],
       [
-        125,
+        126,
         0.0
       ],
       [
         129,
+        1.0
+      ],
+      [
+        132,
         0.0
       ],
       [
-        134,
+        136,
+        51.0
+      ],
+      [
+        139,
         0.0
       ],
       [
-        138,
+        142,
+        11.0
+      ],
+      [
+        145,
         0.0
       ],
       [
-        144,
+        148,
+        5.0
+      ],
+      [
+        151,
+        110.0
+      ],
+      [
+        154,
         0.0
       ],
       [
-        147,
+        157,
+        37.0
+      ],
+      [
+        161,
+        63.0
+      ],
+      [
+        164,
         0.0
       ],
       [
-        152,
+        167,
         0.0
       ],
       [
-        156,
+        170,
         0.0
       ],
       [
-        159,
-        0.0
-      ],
-      [
-        162,
-        0.0
-      ],
-      [
-        166,
-        0.0
-      ],
-      [
-        169,
-        0.0
-      ],
-      [
-        172,
+        173,
         0.0
       ],
       [
@@ -229,7 +257,7 @@
         0.0
       ],
       [
-        182,
+        183,
         0.0
       ],
       [
@@ -237,35 +265,39 @@
         0.0
       ],
       [
-        190,
+        189,
         0.0
       ],
       [
-        193,
+        192,
         0.0
       ],
       [
-        196,
+        195,
         0.0
       ],
       [
-        200,
+        198,
         0.0
       ],
       [
-        203,
+        201,
         0.0
       ],
       [
-        207,
+        205,
         0.0
       ],
       [
-        210,
+        208,
         0.0
       ],
       [
-        213,
+        211,
+        0.0
+      ],
+      [
+        214,
         0.0
       ],
       [
@@ -273,7 +305,7 @@
         0.0
       ],
       [
-        220,
+        221,
         0.0
       ],
       [
@@ -297,23 +329,303 @@
         0.0
       ],
       [
-        240,
+        239,
         0.0
       ]
     ]
   },
+  "after_reset_windows": [
+    {
+      "from_s": 0,
+      "requests": 50,
+      "p50_ms": 6036,
+      "p99_ms": 6179,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 10,
+      "requests": 50,
+      "p50_ms": 6032,
+      "p99_ms": 6219,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 20,
+      "requests": 50,
+      "p50_ms": 6029,
+      "p99_ms": 6077,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 30,
+      "requests": 50,
+      "p50_ms": 6030,
+      "p99_ms": 6085,
+      "error_rate": 0.98,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 49,
+        "200": 1
+      }
+    },
+    {
+      "from_s": 40,
+      "requests": 50,
+      "p50_ms": 6027,
+      "p99_ms": 6055,
+      "error_rate": 0.94,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "200": 3,
+        "503": 47
+      }
+    },
+    {
+      "from_s": 50,
+      "requests": 50,
+      "p50_ms": 6025,
+      "p99_ms": 6080,
+      "error_rate": 0.84,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 42,
+        "200": 8
+      }
+    },
+    {
+      "from_s": 60,
+      "requests": 50,
+      "p50_ms": 6031,
+      "p99_ms": 6107,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 70,
+      "requests": 50,
+      "p50_ms": 6030,
+      "p99_ms": 6131,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 80,
+      "requests": 50,
+      "p50_ms": 6039,
+      "p99_ms": 6176,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 90,
+      "requests": 50,
+      "p50_ms": 6038,
+      "p99_ms": 6204,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 100,
+      "requests": 50,
+      "p50_ms": 6039,
+      "p99_ms": 6089,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 110,
+      "requests": 50,
+      "p50_ms": 6038,
+      "p99_ms": 6081,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 120,
+      "requests": 50,
+      "p50_ms": 6038,
+      "p99_ms": 6100,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 130,
+      "requests": 50,
+      "p50_ms": 6043,
+      "p99_ms": 6234,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 140,
+      "requests": 50,
+      "p50_ms": 6050,
+      "p99_ms": 6188,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 150,
+      "requests": 50,
+      "p50_ms": 6034,
+      "p99_ms": 6133,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 160,
+      "requests": 50,
+      "p50_ms": 6045,
+      "p99_ms": 6253,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 170,
+      "requests": 50,
+      "p50_ms": 6036,
+      "p99_ms": 6082,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 180,
+      "requests": 50,
+      "p50_ms": 6040,
+      "p99_ms": 6180,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 190,
+      "requests": 50,
+      "p50_ms": 6029,
+      "p99_ms": 6094,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 200,
+      "requests": 50,
+      "p50_ms": 6037,
+      "p99_ms": 6093,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 210,
+      "requests": 50,
+      "p50_ms": 6034,
+      "p99_ms": 6222,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 220,
+      "requests": 50,
+      "p50_ms": 6033,
+      "p99_ms": 6100,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 230,
+      "requests": 50,
+      "p50_ms": 6047,
+      "p99_ms": 6130,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 50
+      }
+    },
+    {
+      "from_s": 240,
+      "requests": 1,
+      "p50_ms": 6123,
+      "p99_ms": 6123,
+      "error_rate": 1.0,
+      "degraded_rate": 0.0,
+      "statuses": {
+        "503": 1
+      }
+    }
+  ],
   "recovery_seconds": null,
   "recovery_capped_at_s": 240,
   "recovery_threshold_in_flight": 10.0,
-  "recovery_p99_limit_ms": 3426.0,
+  "recovery_p99_limit_ms": 660.0,
   "traces": {
     "baseline": {
       "status": 200,
-      "seconds": 0.22
+      "seconds": 0.21
     },
     "slowdown": {
       "status": 503,
-      "seconds": 6.13
+      "seconds": 6.02
     }
   },
   "stock_spans_in_slowdown_trace": 0

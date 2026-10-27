@@ -2,8 +2,8 @@
   "rps": 5.0,
   "before_outage": {
     "requests": 61,
-    "p50_ms": 161,
-    "p99_ms": 416,
+    "p50_ms": 66,
+    "p99_ms": 923,
     "error_rate": 0.0,
     "degraded_rate": 0.0,
     "statuses": {
@@ -11,19 +11,19 @@
     }
   },
   "during_outage": {
-    "requests": 123,
-    "p50_ms": 41,
-    "p99_ms": 272,
+    "requests": 121,
+    "p50_ms": 9,
+    "p99_ms": 125,
     "error_rate": 0.0,
     "degraded_rate": 1.0,
     "statuses": {
-      "200": 123
+      "200": 121
     }
   },
   "after_restart": {
     "requests": 20,
-    "p50_ms": 116,
-    "p99_ms": 341,
+    "p50_ms": 98,
+    "p99_ms": 235,
     "error_rate": 0.0,
     "degraded_rate": 0.0,
     "statuses": {
@@ -31,11 +31,11 @@
     }
   },
   "requests_during_outage": 155,
-  "pricing_attempts_sent_to_stock_during_outage": 31.0,
-  "pricing_calls_refused_by_the_breaker": 121.0,
+  "pricing_attempts_sent_to_stock_during_outage": 30.0,
+  "pricing_calls_refused_by_the_breaker": 124.0,
   "breaker_state_at_end_of_outage": 1.0,
   "forced_request": {
     "status": 200,
-    "seconds": 0.18
+    "seconds": 0.04
   }
 }

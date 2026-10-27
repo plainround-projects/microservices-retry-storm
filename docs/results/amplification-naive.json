@@ -7,18 +7,18 @@
     "gateway": 226.0,
     "search": 226.0,
     "pricing": 230.0,
-    "stock": 308.0
+    "stock": 304.0
   },
   "ratios": {
     "search:gateway": 1.0,
     "pricing:gateway": 1.02,
-    "stock:gateway": 1.36
+    "stock:gateway": 1.35
   },
   "gateway_retries": 0,
   "client": {
     "requests": 225,
-    "p50_ms": 158,
-    "p99_ms": 605,
+    "p50_ms": 115,
+    "p99_ms": 361,
     "error_rate": 0.0,
     "degraded_rate": 0.0,
     "statuses": {

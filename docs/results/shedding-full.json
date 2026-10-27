@@ -1,22 +1,21 @@
 {
-  "rps": 30.0,
-  "limit": 8,
+  "rps": 10.0,
+  "limit": 3,
   "client": {
-    "requests": 474,
-    "p50_ms": 6234,
-    "p99_ms": 12481,
-    "error_rate": 0.8819,
-    "degraded_rate": 0.1181,
+    "requests": 250,
+    "p50_ms": 59,
+    "p99_ms": 1817,
+    "error_rate": 0.62,
+    "degraded_rate": 0.38,
     "statuses": {
-      "503": 417,
-      "200": 56,
-      "0": 1
+      "503": 155,
+      "200": 95
     }
   },
-  "search_shed": 219.0,
-  "gateway_retries": 53.0,
+  "search_shed": 217.0,
+  "gateway_retries": 30.0,
   "gateway_outcomes": {
-    "outcomes_total{outcome=unavailable}": 547.0,
-    "outcomes_total{outcome=degraded}": 79.0
+    "outcomes_total{outcome=unavailable}": 187.0,
+    "outcomes_total{outcome=degraded}": 114.0
   }
 }
