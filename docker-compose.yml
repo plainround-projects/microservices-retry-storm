@@ -19,7 +19,7 @@ services:
       POSTGRES_DB: stock
     ports: ["127.0.0.1:${STOCK_DB_PORT:-43432}:5432"]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U stock_owner -d stock"]
+      test: ["CMD-SHELL", "pg_isready -U stock_owner -d stock"]
       interval: 2s
       timeout: 3s
       retries: 40
