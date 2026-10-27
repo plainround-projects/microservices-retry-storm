@@ -204,6 +204,7 @@ docker-compose.yml        the stock database and its init job, the four services
 Dockerfile                one image per service (--build-arg SERVICE=...), non-root, pinned base image
 pyproject.toml, uv.lock   the uv workspace and the lock file
 Makefile                  the only commands a reader needs (make help)
+tech/                     one note per technology used here, from zero, with an index (tech/README.md)
 ```
 
 The dependency rule (domain depends on nothing; application on domain and resilience; infrastructure and interfaces on both; nothing on interfaces) is enforced by `make lint` through import-linter, per service. A second contract forbids `domain` and `application` from importing FastAPI, psycopg, httpx, prometheus-client or the chassis.
@@ -211,6 +212,10 @@ The dependency rule (domain depends on nothing; application on domain and resili
 ## The SQL
 
 The stock store is the only service with data. Its `services/stock/sql/` holds `001_schema.sql` (the `stock_levels` table, the read-only application role), `002_seed.sql` (the 20 skus, four of them under ten units) and `003_queries.sql` (the queries behind the price surcharge); `make db` applies the first two and `make queries` runs the third. Search and pricing keep no data of their own: search resolves a query to a sku by a fixed rule, and pricing derives a base price from the sku and caches its last answer in memory, which is the fallback the lesson's diagram calls "cached answer".
+
+## Technology notes
+
+[tech/](tech/README.md) has one note for each of the 27 technologies this repository uses (Python, asyncio, FastAPI, httpx, prometheus_client, PostgreSQL, Docker and the rest), written for a reader who knows none of them. Each note walks through this repository's own files. If you have ten minutes, read `asyncio.md`, `python.md` and `prometheus-client.md`.
 
 ## Author and license
 
