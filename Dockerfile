@@ -21,7 +21,8 @@ FROM dependencies AS build
 ARG SERVICE
 COPY libs ./libs
 COPY services ./services
-RUN --mount=type=cache,target=/root/.cache/uv uv pip install --python /app/.venv/bin/python --no-deps ./libs/* "./services/${SERVICE}"
+# No shared cache here: images built in parallel would wait on each other for the cache lock.
+RUN uv pip install --no-cache --python /app/.venv/bin/python --no-deps ./libs/* "./services/${SERVICE}"
 
 FROM python:3.12.8-slim-bookworm@sha256:2199a62885a12290dc9c5be3ca0681d367576ab7bf037da120e564723292a2f0
 ARG SERVICE
