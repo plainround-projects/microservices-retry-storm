@@ -1,5 +1,7 @@
 # asyncio, async and await
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 `asyncio` is Python's built-in way to handle many waiting jobs in one thread. A web service spends most of its time waiting: for a network answer, for a database. While one request waits, the same thread can work on another. An **async function** (`async def`) is a function that is allowed to pause at certain points. A **coroutine** is the object you get by calling it; it does nothing until something runs it.

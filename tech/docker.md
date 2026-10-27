@@ -1,5 +1,7 @@
 # Docker
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 Docker is a tool that runs programs inside **containers**. A container is a normal process on your machine, but Docker gives it its own private view: its own file system, its own network name, its own list of processes, and limits on what it may use. It is lighter than a virtual machine because it shares the host's operating system kernel (on a Mac or Windows laptop, Docker Desktop runs a small Linux virtual machine and starts the containers inside it).

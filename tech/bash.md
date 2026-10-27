@@ -1,5 +1,7 @@
 # Bash and shell scripts
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 A **shell** is a program that reads commands you type (or read from a file) and runs other programs for you. `bash` is the most common shell. `sh` is a smaller, older, more portable shell; on many systems it is a lightweight program that understands less than bash. A **shell script** is a text file of commands, run top to bottom.
@@ -106,7 +108,7 @@ This recipe is a shell program inside make. `for p in $(PACKAGES); do ... done` 
 CMD ["sh", "-c", "exec ${SERVICE}-serve"]
 ```
 
-A shell expands `${SERVICE}` and `exec` replaces itself with `stock-serve` (or `gateway-serve` and so on). The service becomes process 1 and receives `SIGTERM` directly (see `uvicorn.md`).
+A shell expands `${SERVICE}` and `exec` replaces itself with `stock-serve` (or `gateway-serve`, `search-serve` or `pricing-serve`). The service becomes process 1 and receives `SIGTERM` directly (see `uvicorn.md`).
 
 ## Try it yourself
 

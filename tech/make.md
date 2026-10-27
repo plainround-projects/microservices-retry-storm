@@ -1,5 +1,7 @@
 # GNU Make
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 `make` is a command-line tool that runs named recipes from a file called `Makefile`. A **recipe** is a list of shell commands. You type `make test` and make finds the rule called `test` and runs its commands. Make was invented to rebuild only what changed. This repository uses it for a simpler reason: one short, memorable name for every long command.

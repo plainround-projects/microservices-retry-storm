@@ -1,5 +1,7 @@
 # FastAPI and Starlette
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 FastAPI is a Python framework for building web APIs. A **web API** is a program that other programs call over HTTP: they send a request (a method such as `GET` or `POST`, a path such as `/orders`, headers, an optional body) and get a response (a status code such as 200 or 404, headers, a body, usually JSON). **JSON** is a text format for data: objects `{"a": 1}`, lists `[1, 2]`, text, numbers, `true`, `false`, `null`.
@@ -107,7 +109,7 @@ def create_app(
         return {"sku": answer.sku, "inStock": answer.in_stock, "quantity": answer.quantity}
 ```
 
-The same shape. The use case raises domain errors and the handler maps each to an HTTP status: `InjectedFailure` to 500, `UnknownSku` to 404, `DeadlineExceeded` to 504 (the caller's time ran out). `current_deadline()` reads the deadline the middleware stored for this request.
+This route has the same parts as the gateway's: a Pydantic body, a call to the use case, and a mapping of errors to statuses. The use case raises domain errors and the handler maps each to an HTTP status: `InjectedFailure` to 500, `UnknownSku` to 404, `DeadlineExceeded` to 504 (the caller's time ran out). `current_deadline()` reads the deadline the middleware stored for this request.
 
 ### The middleware, written as raw ASGI
 

@@ -1,5 +1,7 @@
 # TOML
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 TOML is a file format for settings. It is plain text that a person can read and edit, and every tool can parse it into names and values. A **file format** is an agreed way to write information in a file so that programs can read it back.
@@ -26,7 +28,7 @@ A TOML file is a list of key-value pairs, grouped under headings.
 - `[[heading]]` (double brackets) adds one item to a **list of tables**. Writing it twice makes a list of two items.
 - `#` starts a comment that runs to the end of the line.
 
-A tool reads the file once at start-up. Each tool looks only at its own area: `ruff` reads `[tool.ruff...]`, `mypy` reads `[tool.mypy]`, and so on. `pyproject.toml` is the standard file where Python tools keep their settings.
+A tool reads the file once at start-up. Each tool looks only at its own area: `ruff` reads `[tool.ruff...]`, `mypy` reads `[tool.mypy]` and `pytest` reads `[tool.pytest.ini_options]`. `pyproject.toml` is the standard file where Python tools keep their settings.
 
 ## Walkthrough of this repository's use
 
@@ -172,6 +174,362 @@ check_untyped_defs = true
 - `[tool.ruff]` and its children set the width (120), `extend-exclude = ["tech"]` (skip the notes folder: ruff 0.17 formats Python code blocks inside Markdown and these notes quote fragments), the rule families, per-file relaxations, and the first-party names (see `ruff.md`).
 - The root `[tool.pytest.ini_options]` covers `tests/system` and `tests/e2e`, sets `asyncio_mode = "auto"` and registers `e2e` and `experiment`.
 - The root `[tool.mypy]` checks `tests` and `scripts`; the first override says `prometheus_client` has no type hints and mypy should accept that; the second relaxes checks for tests and scripts.
+
+### The root file, from its first line
+
+```toml
+# Workspace root: no code of its own. It pins the development tools and tells uv which packages belong together.
+[project]
+name = "microservices-retry-storm"
+version = "0.1.0"
+description = "A four-service chain that turns a slow dependency into an outage with naive retries, then stops it with deadlines, a retry budget, a breaker and load shedding."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Sumit Srivastava" }]
+dependencies = []
+```
+
+The comment says what the file is: a workspace root with no code of its own. `[project]` names the repository, gives a version, a description and `readme = "README.md"`. `requires-python = ">=3.12"` refuses older Pythons. `license = { text = "MIT" }` is an inline table (`{ key = value }` on one line). `authors = [{ name = "Sumit Srivastava" }]` is a list with one inline table. `dependencies = []` is an empty list: the tools are in the `dev` group (see `uv.md`).
+
+### The resilience library, every key
+
+```toml
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "resilience"
+version = "0.1.0"
+description = "The resilience policy as plain objects: deadlines, backoff with jitter, a retry budget, a circuit breaker, a concurrency limiter. No I/O; every clock is injected."
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Sumit Srivastava" }]
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+resilience = ["py.typed"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_calls = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers --import-mode=importlib"
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["resilience"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+```
+
+- `[build-system]` and `[project]` follow the pattern of every package. `dependencies = []` is deliberate: the policy library needs nothing outside the standard library.
+- `[tool.setuptools.packages.find]` and `[tool.setuptools.package-data]` look in `src/` and ship `py.typed`.
+- `[tool.mypy]`: strict checking of `src` and `tests`; the override relaxes test modules. There is no override for `prometheus_client` here because this package does not import it.
+- `[tool.pytest.ini_options]` has `asyncio_mode = "auto"` (the retry loops are async; see `pytest-asyncio.md`).
+- `[tool.coverage.run]` measures `resilience` with branch coverage; the Makefile requires 95 percent of the whole package.
+- It has no `[project.scripts]` (a library) and no import-linter contracts.
+
+### The chassis package, every key
+
+```toml
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chassis"
+version = "0.1.0"
+description = "Service chassis: settings, JSON logging, W3C trace context and spans, deadline context, metrics, one-attempt upstream calls, health, async PostgreSQL pool."
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Sumit Srivastava" }]
+dependencies = [
+    "resilience",
+    "fastapi>=0.115",
+    "httpx>=0.27",
+    "prometheus-client>=0.20",
+    "psycopg[binary,pool]>=3.2,<4",
+]
+
+[tool.uv.sources]
+resilience = { workspace = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+chassis = ["py.typed"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_calls = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers --import-mode=importlib"
+asyncio_mode = "auto"
+filterwarnings = ["ignore:Using `httpx` with `starlette.testclient`"]
+
+[tool.coverage.run]
+source = ["chassis"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+```
+
+Its `dependencies` are `resilience` (a sibling, named in `[tool.uv.sources]` with `{ workspace = true }`) and four third-party libraries: `fastapi`, `httpx`, `prometheus-client` and `psycopg[binary,pool]`. Mypy, pytest (with `asyncio_mode = "auto"` and the warning filter) and coverage are as in the other packages. No scripts, no import-linter contracts: it is infrastructure.
+
+### The gateway package, every key
+
+```toml
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gateway"
+version = "0.1.0"
+description = "The gateway: sets the deadline and is the only layer that retries, with backoff, jitter and a retry budget."
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Sumit Srivastava" }]
+dependencies = ["chassis", "resilience", "fastapi>=0.115", "uvicorn>=0.30"]
+
+[project.scripts]
+gateway-serve = "gateway.interfaces.main:main"
+
+[tool.uv.sources]
+chassis = { workspace = true }
+resilience = { workspace = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+gateway = ["py.typed"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_calls = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers --import-mode=importlib"
+filterwarnings = ["ignore:Using `httpx` with `starlette.testclient`"]
+asyncio_mode = "auto"
+markers = ["integration: needs the compose stack (make up)"]
+
+[tool.coverage.run]
+source = ["gateway"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.importlinter]
+root_package = "gateway"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layers: interfaces -> infrastructure -> application -> domain, never upward"
+type = "layers"
+layers = ["gateway.interfaces", "gateway.infrastructure", "gateway.application", "gateway.domain"]
+
+[[tool.importlinter.contracts]]
+name = "Domain and application know nothing about FastAPI, PostgreSQL, httpx, Prometheus or the chassis"
+type = "forbidden"
+source_modules = ["gateway.domain", "gateway.application"]
+forbidden_modules = ["fastapi", "psycopg", "psycopg_pool", "httpx", "prometheus_client", "chassis"]
+```
+
+- Lines 1 to 12: build system and description; `dependencies` are the two siblings and the web libraries.
+- Lines 14 to 15: `[project.scripts] gateway-serve = "gateway.interfaces.main:main"` makes the command the container runs.
+- Lines 17 to 19: workspace sources for `chassis` and `resilience`.
+- Lines 21 to 25: the `src` layout and the `py.typed` marker.
+- Lines 27 to 36: strict mypy, with the relaxed test override.
+- Lines 38 to 44: pytest settings, including `asyncio_mode = "auto"` and the one marker `integration`.
+- Lines 46 to 51: coverage.
+- Lines 53 to 66: import-linter. The layers list names the four layers; the forbidden contract bars `fastapi`, `psycopg`, `psycopg_pool`, `httpx`, `prometheus_client` and `chassis` from `gateway.domain` and `gateway.application` (see `import-linter.md`).
+
+### The search, pricing and stock packages
+
+```toml
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "search"
+version = "0.1.0"
+description = "Search: resolves a query to a sku and asks pricing, with load shedding and a partial-result fallback."
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Sumit Srivastava" }]
+dependencies = ["chassis", "resilience", "fastapi>=0.115", "uvicorn>=0.30"]
+
+[project.scripts]
+search-serve = "search.interfaces.main:main"
+
+[tool.uv.sources]
+chassis = { workspace = true }
+resilience = { workspace = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+search = ["py.typed"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_calls = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers --import-mode=importlib"
+filterwarnings = ["ignore:Using `httpx` with `starlette.testclient`"]
+asyncio_mode = "auto"
+markers = ["integration: needs the compose stack (make up)"]
+
+[tool.coverage.run]
+source = ["search"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.importlinter]
+root_package = "search"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layers: interfaces -> infrastructure -> application -> domain, never upward"
+type = "layers"
+layers = ["search.interfaces", "search.infrastructure", "search.application", "search.domain"]
+
+[[tool.importlinter.contracts]]
+name = "Domain and application know nothing about FastAPI, PostgreSQL, httpx, Prometheus or the chassis"
+type = "forbidden"
+source_modules = ["search.domain", "search.application"]
+forbidden_modules = ["fastapi", "psycopg", "psycopg_pool", "httpx", "prometheus_client", "chassis"]
+```
+
+`search` has exactly the structure of the gateway: its description reads "Search: resolves a query to a sku and asks pricing, with load shedding and a partial-result fallback"; its command is `search-serve`; its import-linter `root_package` is `search`.
+
+```toml
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pricing"
+version = "0.1.0"
+description = "Pricing: quotes a price from the stock level, with a circuit breaker and a last-known-price fallback."
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Sumit Srivastava" }]
+dependencies = ["chassis", "resilience", "fastapi>=0.115", "uvicorn>=0.30"]
+
+[project.scripts]
+pricing-serve = "pricing.interfaces.main:main"
+
+[tool.uv.sources]
+chassis = { workspace = true }
+resilience = { workspace = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+pricing = ["py.typed"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_calls = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers --import-mode=importlib"
+filterwarnings = ["ignore:Using `httpx` with `starlette.testclient`"]
+asyncio_mode = "auto"
+markers = ["integration: needs the compose stack (make up)"]
+
+[tool.coverage.run]
+source = ["pricing"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.importlinter]
+root_package = "pricing"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layers: interfaces -> infrastructure -> application -> domain, never upward"
+type = "layers"
+layers = ["pricing.interfaces", "pricing.infrastructure", "pricing.application", "pricing.domain"]
+
+[[tool.importlinter.contracts]]
+name = "Domain and application know nothing about FastAPI, PostgreSQL, httpx, Prometheus or the chassis"
+type = "forbidden"
+source_modules = ["pricing.domain", "pricing.application"]
+forbidden_modules = ["fastapi", "psycopg", "psycopg_pool", "httpx", "prometheus_client", "chassis"]
+```
+
+`pricing` likewise: description "Pricing: quotes a price from the stock level, with a circuit breaker and a last-known-price fallback"; command `pricing-serve`; import-linter root `pricing`.
+
+The `stock` package (whose first 66 lines are quoted earlier in this note) differs in its description, its command `stock-serve`, and its `markers` line.
 
 ## Try it yourself
 

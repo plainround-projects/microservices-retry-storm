@@ -1,5 +1,7 @@
 # Git
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 Git is a tool that records the history of a folder. Each saved state is a **commit**: a snapshot of every tracked file plus a message, an author, a time and a pointer to the commit before it. A folder with its history is a **repository**. Git keeps its data in a hidden `.git/` folder.

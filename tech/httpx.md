@@ -1,5 +1,7 @@
 # httpx
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 `httpx` is a Python library for making HTTP requests: your code acts as the client and calls another program's web API. It has a simple API (`client.post(url, json=body)`), supports timeouts, and has both a synchronous and an asynchronous client.

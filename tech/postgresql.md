@@ -1,5 +1,7 @@
 # PostgreSQL
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 PostgreSQL (often "Postgres") is a relational database **server**: a program that runs all the time, keeps tables on disk, and answers SQL sent to it over the network (see `sql.md`). A **client**, such as the `psql` command-line program or a Python library, connects, sends SQL and reads the answers.

@@ -1,5 +1,7 @@
 # GitHub Actions
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 GitHub Actions is GitHub's built-in automation service. A **workflow** is a YAML file (see `yaml.md`) in `.github/workflows/`. GitHub reads it and, when a chosen event happens (a push, a pull request), starts a fresh virtual machine, called a **runner**, and runs the steps you listed. It is the repository's CI: continuous integration, meaning "check every change automatically".

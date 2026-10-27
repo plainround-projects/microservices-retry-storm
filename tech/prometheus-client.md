@@ -1,5 +1,7 @@
 # prometheus_client and the Prometheus text format
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 `prometheus_client` is a Python library for keeping **metrics**: numbers that describe how a program is behaving, such as how many requests it has served. Prometheus is a monitoring system that reads metrics from programs; its format is the common way to expose them. Here no Prometheus server is run; the experiments read the metrics directly.
@@ -23,7 +25,7 @@ The lesson's proof of amplification is a number: how many requests each service 
 
 ## How it works underneath
 
-- A **Counter** only goes up (requests served). A **Gauge** goes up and down (requests in progress). A **Histogram** counts observations into buckets (how many requests took under 10 ms, under 25 ms, and so on) so that percentiles can be estimated.
+- A **Counter** only goes up (requests served). A **Gauge** goes up and down (requests in progress). A **Histogram** counts observations into buckets (how many requests took under 10 ms, how many under 25 ms, and the other bucket limits) so that percentiles can be estimated.
 - A **registry** is the set of metrics a program exposes. `generate_latest(registry)` renders them as text in the exposition format: `# HELP` and `# TYPE` comment lines, then one line per series, `name{label="value"} number`.
 - Counters in this library also produce a `_created` series, the time the counter was created. A counter name conventionally ends in `_total`.
 - A reader takes two readings and subtracts: the difference of a counter over a time window is the number of events in that window. Dividing the difference at one service by the difference at another gives a ratio.

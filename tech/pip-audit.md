@@ -1,5 +1,7 @@
 # pip-audit
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 pip-audit checks the Python packages a project uses against a database of known security vulnerabilities. Each known problem has an identifier, such as a CVE number or a PYSEC or GHSA id. If a pinned version has a known problem, pip-audit prints it and fails.

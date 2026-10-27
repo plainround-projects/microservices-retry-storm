@@ -1,5 +1,7 @@
 # Docker Compose
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 Docker Compose is a tool, built into the `docker` command as `docker compose`, that starts a group of containers from one YAML file (see `yaml.md`). The file lists the **services** (each service becomes one or more containers), how to build or pull their images, their settings, and how they depend on each other.
@@ -37,7 +39,7 @@ One file starts the whole chain, from the database up to the gateway, in the rig
 name: ${COMPOSE_PROJECT_NAME:-storm}
 ```
 
-The comment states the shape: `gateway -> search -> pricing -> stock -> stock-db`, everything bound to `127.0.0.1`, and the admin and metrics routes published on purpose so the experiments can use them. `name: ${COMPOSE_PROJECT_NAME:-storm}` sets the project name; containers are called `storm-gateway-1` and so on.
+The comment states the shape: `gateway -> search -> pricing -> stock -> stock-db`, everything bound to `127.0.0.1`, and the admin and metrics routes published on purpose so the experiments can use them. `name: ${COMPOSE_PROJECT_NAME:-storm}` sets the project name; containers are called `storm-gateway-1`, `storm-search-1`, `storm-pricing-1`, `storm-stock-1` and `storm-stock-db-1`.
 
 ### The shared settings
 
@@ -113,6 +115,33 @@ Each service gets the address of the next one by its **service name** on the pro
 ### How the pieces start
 
 `make up` runs `docker compose --ansi never up -d --build --wait --wait-timeout 1200`. Compose builds four images, starts the database, runs the SQL, then starts the services from the bottom of the chain up. `--wait` returns when every service with a health check is healthy.
+
+### The remaining lines
+
+```yaml
+services:
+```
+
+`services:` begins the mapping of all the containers.
+
+### The variables the compose file reads
+
+Compose reads `.env` next to the compose file (`make up` copies `.env.example`, a 27-line file of throwaway values, to `.env` the first time). These are all the variables the file reads:
+
+| Variable | Used for | If missing |
+| --- | --- | --- |
+| `COMPOSE_PROJECT_NAME` | prefix of container names | `storm` |
+| `STOCK_DB_PORT` | laptop port of the stock database | 43432 |
+| `STOCK_OWNER_PASSWORD`, `STOCK_APP_PASSWORD` | the database's owner role and application role | Compose stops with `run make env` |
+| `STOCK_CONCURRENCY` | how many stock checks run at once | 16 |
+| `LATENCY_MS` | the stock store's starting injected latency | 50 |
+| `FAIL_RATE` | the stock store's starting share of failing calls | 0 |
+| `LOG_LEVEL` | how much each service logs | `WARNING` |
+| `STOCK_PORT`, `PRICING_PORT`, `SEARCH_PORT`, `GATEWAY_PORT` | laptop ports of the four APIs | 43083, 43082, 43081, 43080 |
+| `SEARCH_CONCURRENCY_LIMIT` | search's load-shedding limit | 40 |
+| `TRACE_SAMPLE_RATE` | the share of gateway requests whose trace is recorded | 0 |
+
+A variable with `:?message` has no default and is therefore required; the others use `:-default`. All host ports are bound to `127.0.0.1`.
 
 ## Try it yourself
 

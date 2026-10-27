@@ -1,5 +1,7 @@
 # mypy
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 mypy is a **static type checker** for Python. "Static" means it reads your code without running it. It uses the type hints you wrote (see `python.md`) and reports places where the types do not fit: passing text where a number is expected, calling a method that does not exist, forgetting that a value can be `None`.

@@ -1,5 +1,7 @@
 # YAML
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 YAML is a file format for structured settings, like TOML and JSON (see `toml.md`, `json.md`). It uses indentation instead of brackets, so it reads almost like an outline. Docker Compose and GitHub Actions both use it.

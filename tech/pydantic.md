@@ -1,5 +1,7 @@
 # pydantic
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 pydantic is a Python library that checks data against a description. You write a class that lists fields and their types. When you build an object from untrusted data, such as JSON from a request, pydantic checks every field, converts what it can, and raises an error that lists exactly what was wrong.

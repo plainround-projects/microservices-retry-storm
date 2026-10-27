@@ -1,5 +1,7 @@
 # import-linter
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 import-linter is a tool that checks which modules import which other modules. You write the allowed dependencies as **contracts** in the configuration. The tool builds the graph of imports from your code and fails if a contract is broken. It turns an architecture rule that lives in a diagram into a check that runs on every commit.

@@ -1,5 +1,7 @@
 # uvicorn
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 uvicorn is a web server for Python. A **web server** is the program that listens on a network port, accepts HTTP connections, reads the requests and hands them to your application. It speaks HTTP to the outside and **ASGI** (see `fastapi.md`) to your code.

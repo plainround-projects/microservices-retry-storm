@@ -1,5 +1,7 @@
 # Dockerfile syntax
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 A Dockerfile is a text file with the recipe for building a Docker image (see `docker.md`). Each line is an instruction in capital letters followed by arguments. Docker runs them top to bottom; most of them add a layer to the image.

@@ -1,12 +1,14 @@
 # psycopg 3 and its async connection pool
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 `psycopg` is a Python library that talks to PostgreSQL. You give it a connection string; it opens a connection, sends SQL text with values attached, and turns the answers into Python values. The `[binary]` extra installs a compiled speed-up, and `psycopg_pool` is a companion package that keeps a **pool**: a small set of already-open connections that code borrows and returns.
 
 ## Why this repository uses it
 
-The stock service is asynchronous (see `asyncio.md`), so its database driver must not block the event loop. psycopg 3 has an async API (`AsyncConnection`) and an async pool (`AsyncConnectionPool`) with the same shape as the synchronous ones: you `await` the calls that wait and use `async with` for connections.
+The stock service is asynchronous (see `asyncio.md`), so its database driver must not block the event loop. psycopg 3 has an async API (`AsyncConnection`) and an async pool (`AsyncConnectionPool`) that mirror the synchronous ones (the same classes and methods, with `Async` in the name): you `await` the calls that wait and use `async with` for connections.
 
 ## Where it appears
 

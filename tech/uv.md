@@ -1,5 +1,7 @@
 # uv
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 `uv` is a command-line tool for Python projects. It creates a **virtual environment** (a private folder, here `.venv/`, that holds the Python packages one project needs, so projects do not disturb each other). It installs packages into that folder and records the exact versions in a **lock file**. It also runs commands inside the environment.

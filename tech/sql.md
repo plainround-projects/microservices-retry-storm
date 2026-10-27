@@ -1,5 +1,7 @@
 # SQL
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 SQL (Structured Query Language) is the language used to talk to a relational database. A **relational database** stores data in **tables**. A table has **columns** (the named fields, each with a type) and **rows** (one record each). You write statements; the database runs them and answers.
@@ -92,6 +94,15 @@ SELECT count(*) FILTER (WHERE quantity < 10) AS low_stock_skus, count(*) AS skus
 
 The `%s` placeholder carries the sku separately from the SQL text, which prevents SQL injection. `await cursor.fetchone()` returns one row as a dictionary, or `None` when the SKU is unknown. See `psycopg.md` for the async pool.
 
+### The header of the schema file
+
+```sql
+-- DDL for the stock store's own database. Run as the database owner; the app password arrives as the psql
+-- variable app_password.
+```
+
+Two comment lines: the file is the stock store's own database, run as the database owner, and the application password arrives as the `psql` variable `app_password`.
+
 ## Try it yourself
 
 These need a running PostgreSQL with the SQL applied (`make up`, then the form below).
@@ -102,7 +113,7 @@ These need a running PostgreSQL with the SQL applied (`make up`, then the form b
    make queries
    ```
 
-   Expect a table of 20 rows (`sku-001` with 23, `sku-005` with 6 and `low_stock` true, and so on) and then `low_stock_skus | skus` with `4 | 20`.
+   Expect a table of 20 rows (`sku-001` with 23, `sku-005` with 6 and `low_stock` true, `sku-010` with 4 and `low_stock` true) and then `low_stock_skus | skus` with `4 | 20`.
 
 2. Try to break a rule. The database refuses a negative quantity:
 

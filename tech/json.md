@@ -1,5 +1,7 @@
 # JSON
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 JSON (JavaScript Object Notation) is a text format for data. Almost every programming language can read and write it, so it is the usual way for programs to send data to each other over HTTP and to keep small data files.
@@ -131,6 +133,20 @@ async def set_profile(name: str) -> None:
 ```
 
 `as_dict` turns a finished span into a dictionary with JSON-friendly names (`traceId`, `startMs`, `durationMs`). `GET /admin/traces/{trace_id}` returns a list of these; `scripts/trace.py` fetches them and prints the tree (see `python.md`).
+
+### Every file in `docs/results/`
+
+Each experiment writes its raw result here (`_save` in `tests/system/experiments.py`), and the files are committed on purpose as evidence.
+
+| File | Experiment | Keys |
+| --- | --- | --- |
+| `amplification-naive.json`, `amplification-deadline-retry.json` | steps 2 and 4 | `profile`, `fail_rate`, `latency_ms`, `rps`, `received`, `ratios`, `gateway_retries`, `client` (read above) |
+| `slowdown-naive.json`, `slowdown-deadline-retry.json`, `slowdown-full.json` | steps 3 and 6 | `profile`, `fail_rate`, `slow_ms`, `rps`, `baseline`, `slowdown`, `stock_in_flight`, `after_reset_windows`, `recovery_seconds`, `recovery_capped_at_s`, `recovery_threshold_in_flight`, `recovery_p99_limit_ms`, `traces`, `stock_spans_in_slowdown_trace` |
+| `outage-full.json` | step 5, stock stopped | `rps`, `before_outage`, `during_outage`, `after_restart`, `requests_during_outage`, `pricing_attempts_sent_to_stock_during_outage`, `pricing_calls_refused_by_the_breaker`, `breaker_state_at_end_of_outage`, `forced_request` |
+| `shedding-full.json` | step 5, load shedding | `rps`, `limit`, `client`, `search_shed`, `gateway_retries`, `gateway_outcomes` |
+| `*-trace-*.txt` | a rendered span tree | text, not JSON |
+
+In the slowdown files, `baseline`, `slowdown` and each entry of `after_reset_windows` are windows of the same shape as `client` above (`requests`, `p50_ms`, `p99_ms`, `error_rate`, `degraded_rate`, `statuses`); `stock_in_flight` holds the stock store's concurrent-request gauge (`baseline_peak`, `slowdown_peak`, and `after_reset_every_3s` as a list of `[seconds, value]` pairs); `recovery_seconds` is `null` (JSON's "no value") when the system did not recover within the cap.
 
 ## Try it yourself
 

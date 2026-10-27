@@ -1,5 +1,7 @@
 # pytest-asyncio
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 pytest-asyncio is a plugin that lets pytest run tests written as `async def` (see `asyncio.md`). pytest by itself only calls ordinary functions; an `async def` function returns a coroutine that nothing runs. The plugin starts an event loop, runs the coroutine to the end, and reports the result as usual.

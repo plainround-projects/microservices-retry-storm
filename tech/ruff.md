@@ -1,5 +1,7 @@
 # ruff
 
+> New to the words used here (process, port, thread, environment variable, JSON, transaction and the like)? Read [the list of everyday words](README.md#words-you-will-meet-in-every-note) first.
+
 ## What it is
 
 ruff is a tool that reads Python source files without running them. It does two jobs. As a **linter** (`ruff check`) it finds likely mistakes and style problems, such as an unused import or a missing docstring. As a **formatter** (`ruff format`) it rewrites files into one consistent layout, so nobody argues about spaces and line breaks. It is written in Rust and runs in a fraction of a second.
