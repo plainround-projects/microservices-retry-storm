@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stock"
+version = "0.1.0"
+description = "The stock store: answers whether a sku is in stock from its own PostgreSQL database, with latency and errors injected for the experiments."
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Sumit Srivastava" }]
+dependencies = ["chassis", "resilience", "fastapi>=0.115", "uvicorn>=0.30"]
+
+[project.scripts]
+stock-serve = "stock.interfaces.main:main"
+
+[tool.uv.sources]
+chassis = { workspace = true }
+resilience = { workspace = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+stock = ["py.typed"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_calls = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers --import-mode=importlib"
+filterwarnings = ["ignore:Using `httpx` with `starlette.testclient`"]
+asyncio_mode = "auto"
+markers = ["integration: needs the compose stack (make up)"]
+
+[tool.coverage.run]
+source = ["stock"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.importlinter]
+root_package = "stock"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layers: interfaces -> infrastructure -> application -> domain, never upward"
+type = "layers"
+layers = ["stock.interfaces", "stock.infrastructure", "stock.application", "stock.domain"]
+
+[[tool.importlinter.contracts]]
+name = "Domain and application know nothing about FastAPI, PostgreSQL, httpx, Prometheus or the chassis"
+type = "forbidden"
+source_modules = ["stock.domain", "stock.application"]
+forbidden_modules = ["fastapi", "psycopg", "psycopg_pool", "httpx", "prometheus_client", "chassis"]
