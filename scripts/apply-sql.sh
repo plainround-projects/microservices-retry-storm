@@ -3,6 +3,11 @@
 # Used by the *-db-init containers and by `make db`. Reads PGHOST, PGUSER, PGPASSWORD, PGDATABASE and APP_PASSWORD.
 set -eu
 dir="${1:?usage: apply-sql.sh <sql-dir>}"
+# wait for the database to accept queries (it can still be recovering when its health check passes)
+for _ in $(seq 1 90); do
+  psql --no-psqlrc -q -c "SELECT 1" >/dev/null 2>&1 && break
+  sleep 2
+done
 run() {
   echo "applying $1"
   psql --no-psqlrc -v ON_ERROR_STOP=1 -v app_password="${APP_PASSWORD:?}" -q -f "$1"
