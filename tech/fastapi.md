@@ -290,5 +290,5 @@ See `asyncio.md`: `services/stock/src/stock/interfaces/bootstrap.py` defines a l
 - FastAPI documentation (this repository pins FastAPI 0.162, Starlette 1.10): https://fastapi.tiangolo.com/
 - Tutorial, first steps: https://fastapi.tiangolo.com/tutorial/first-steps/
 - Handling errors: https://fastapi.tiangolo.com/tutorial/handling-errors/
-- Starlette middleware: https://www.starlette.io/middleware/
+- Starlette middleware: https://starlette.dev/middleware/
 - ASGI specification: https://asgi.readthedocs.io/

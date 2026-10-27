@@ -103,5 +103,5 @@ The application imports `resilience` (the policy library) on purpose: the librar
 ## Further reading
 
 - import-linter documentation (this repository pins import-linter 2.15): https://import-linter.readthedocs.io/en/stable/
-- Contract types: https://import-linter.readthedocs.io/en/stable/contract_types.html
-- Usage: https://import-linter.readthedocs.io/en/stable/usage.html
+- Contract types: https://import-linter.readthedocs.io/en/stable/contract_types/
+- Layers contract: https://import-linter.readthedocs.io/en/stable/contract_types/layers/

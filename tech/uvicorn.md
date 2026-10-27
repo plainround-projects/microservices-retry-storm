@@ -101,6 +101,6 @@ The times fit inside each other: Docker waits `stop_grace_period: 20s` after `SI
 
 ## Further reading
 
-- uvicorn documentation (this repository pins uvicorn 0.54): https://www.uvicorn.org/
-- Settings, including `timeout_graceful_shutdown`: https://www.uvicorn.org/settings/
-- Deployment: https://www.uvicorn.org/deployment/
+- uvicorn documentation (this repository pins uvicorn 0.54): https://uvicorn.dev/
+- Settings, including `timeout_graceful_shutdown`: https://uvicorn.dev/settings/
+- Deployment: https://uvicorn.dev/deployment/

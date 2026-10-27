@@ -152,5 +152,5 @@ async def pool():
 ## Further reading
 
 - pytest-asyncio documentation (this repository pins pytest-asyncio 1.4): https://pytest-asyncio.readthedocs.io/en/stable/
-- Modes: https://pytest-asyncio.readthedocs.io/en/stable/reference/modes.html
+- Modes: https://pytest-asyncio.readthedocs.io/en/stable/reference/configuration.html
 - Fixtures: https://pytest-asyncio.readthedocs.io/en/stable/reference/fixtures/index.html
