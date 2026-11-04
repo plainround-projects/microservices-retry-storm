@@ -9,6 +9,24 @@ A chain of four small services, gateway to search to pricing to a stock store, t
 | **Level** | Advanced |
 | **Architecture** | [ARCHITECTURE.md](ARCHITECTURE.md), the policy page of step 1: [docs/design/policy.md](docs/design/policy.md), decisions: [docs/adr](docs/adr), raw results: [docs/results](docs/results) |
 
+## Architecture
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/architecture-dark.svg">
+  <img alt="A load generator posts to the gateway, which calls search, which calls pricing, which calls stock and its PostgreSQL database, each hop with one timeout inside the gateway's two second deadline, while the experiment harness switches profiles and reads metrics; two amber notes compare the same slowdown under the naive and full profiles." src="docs/diagrams/architecture.svg">
+</picture>
+
+The deadline travels down the chain and only the gateway retries; the amber notes give the measured errors and stock-store load of the same slowdown, naive against full.
+
+## How one run flows
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/flow-dark.svg">
+  <img alt="One search under the full profile: the gateway starts a two second deadline and each hop makes one attempt, and in the amber rows search sheds at its limit with a 503 or pricing falls back to the last known price, so the user gets a degraded 200 instead of an error." src="docs/diagrams/flow.svg">
+</picture>
+
+The run ends with 0% errors and 100% degraded answers under the slowdown; the amber rows are the two ways the chain refuses to pile up work.
+
 ## Setup, run, test, stop
 
 ```bash

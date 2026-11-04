@@ -18,6 +18,8 @@ Pattern: **ports and adapters** inside each service (`domain`, `application`, `i
 
 ## Data flow
 
+Drawn versions of this figure and of the walk-through: [the architecture](docs/diagrams/architecture.svg) and [one run](docs/diagrams/flow.svg).
+
 ```mermaid
 flowchart LR
     load([load generator<br/>open loop]) -->|POST /search| gw[gateway<br/>deadline 2 s<br/>retry budget 10 percent]

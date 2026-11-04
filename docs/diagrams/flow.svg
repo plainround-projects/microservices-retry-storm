@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="796" viewBox="0 0 1200 796" role="img" aria-labelledby="t d">
+<title id="t">One search under the full profile</title>
+<desc id="d">Eight rows top to bottom across five lanes. The load generator posts a search. The gateway sets a two second deadline and calls search, which calls pricing, which calls stock, each with one attempt and a shrinking timeout. In the first amber row search is at its limit and answers 503 with Retry-After at once. In the second amber row pricing returns the last known price flagged stale. The answer returns as a degraded 200, not an error.</desc>
+<style>
+:root{--paper:#ffffff;--ink:#10243d;--mute:#52677f;--accent:#0a6aa8;--good:#19743f;--warn:#8a5a00}
+text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;fill:var(--ink)}
+.title{font-family:Georgia,'Iowan Old Style','Times New Roman',serif;font-size:36px}
+.caption{font-size:16px;fill:var(--mute)}
+.name{font-size:20px;font-weight:600}
+.lane{font-size:17px;font-weight:600}
+.sub{font-size:15px;fill:var(--mute)}
+.label{font-size:15px}
+.tag{font-size:15px;fill:var(--mute)}
+.num{font-size:15px;font-weight:700;fill:var(--paper)}
+.legend{font-size:14px;fill:var(--mute)}
+.t-accent{fill:var(--accent)}
+.t-good{fill:var(--good)}
+.t-warn{fill:var(--warn)}
+.t-ink{fill:var(--ink)}
+.b{font-weight:600}
+.paper{fill:var(--paper);stroke:var(--mute);stroke-opacity:.3}
+.grid{fill:url(#grid)}
+.boundary{fill:var(--mute);fill-opacity:.035;stroke:var(--mute);stroke-opacity:.7;stroke-dasharray:6 5}
+.svc{fill:var(--accent);fill-opacity:.08;stroke:var(--accent);stroke-width:1.25}
+.store{fill:var(--mute);fill-opacity:.1;stroke:var(--mute);stroke-width:1.25}
+.rim{fill:none;stroke:var(--mute);stroke-width:1.25}
+.actor{fill:none;stroke:var(--mute);stroke-width:1.25}
+.slot{fill:var(--accent);fill-opacity:.14;stroke:var(--accent);stroke-width:1}
+.note{fill:var(--warn);fill-opacity:.09;stroke:var(--warn);stroke-width:1}
+.win{fill:var(--good);fill-opacity:.09;stroke:var(--good);stroke-width:1}
+.hair{fill:none;stroke:var(--mute);stroke-opacity:.4;stroke-width:1}
+.zone{fill:var(--accent);fill-opacity:.045;stroke:var(--accent);stroke-width:1.25;stroke-dasharray:6 5}
+.stop{fill:none;stroke:var(--warn);stroke-width:4;stroke-linecap:round}
+.mask{fill:var(--paper)}
+.sync,.async,.read,.fail,.ok{fill:none}
+.sync{stroke:var(--accent);stroke-width:1.75;marker-end:url(#a-sync)}
+.async{stroke:var(--accent);stroke-width:1.75;stroke-dasharray:8 6;marker-end:url(#a-async)}
+.read{stroke:var(--mute);stroke-width:1.75;stroke-linecap:round;stroke-dasharray:1 6;marker-end:url(#a-read)}
+.fail{stroke:var(--warn);stroke-width:2;marker-end:url(#a-fail)}
+.ok{stroke:var(--good);stroke-width:1.75;marker-end:url(#a-ok)}
+.dot{fill:var(--accent)}
+.dot-w{fill:var(--warn)}
+.dot-g{fill:var(--good)}
+.head-sync,.head-async{stroke:var(--accent)}
+.head-sync{fill:var(--accent)}
+.head-async,.head-read{fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.head-read{stroke:var(--mute)}
+.head-fail{fill:var(--warn)}
+.head-ok{fill:var(--good)}
+.gridline{fill:none;stroke:var(--mute);stroke-opacity:.09}
+</style>
+<defs>
+<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path class="gridline" d="M40 0H0V40"/></pattern>
+<marker id="a-sync" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="head-sync" d="M0 0L10 5L0 10z"/></marker>
+<marker id="a-async" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="head-async" d="M1 1L9 5L1 9"/></marker>
+<marker id="a-read" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="head-read" d="M1 1L9 5L1 9"/></marker>
+<marker id="a-fail" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="head-fail" d="M0 0L10 5L0 10z"/></marker>
+<marker id="a-ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="head-ok" d="M0 0L10 5L0 10z"/></marker>
+</defs>
+<rect class="paper" x="0.5" y="0.5" width="1199" height="795" rx="16"/>
+<rect class="grid" x="1" y="1" width="1198" height="794" rx="16"/>
+<text class="title" x="48" y="68">A slow bottom is a degraded answer</text>
+<text class="caption" x="48" y="100">The full profile. Amber: shed at once, or fall back to the last known price; no error reaches the user.</text>
+<rect class="svc" x="400" y="128" width="120" height="48" rx="10"/>
+<text class="lane" x="460" y="148" text-anchor="middle">Load</text>
+<text class="lane" x="460" y="168" text-anchor="middle">generator</text>
+<rect class="svc" x="550" y="128" width="120" height="48" rx="10"/>
+<text class="lane" x="610" y="158" text-anchor="middle">gateway</text>
+<rect class="svc" x="700" y="128" width="120" height="48" rx="10"/>
+<text class="lane" x="760" y="158" text-anchor="middle">search</text>
+<rect class="svc" x="855" y="128" width="120" height="48" rx="10"/>
+<text class="lane" x="915" y="158" text-anchor="middle">pricing</text>
+<rect class="svc" x="1015" y="128" width="120" height="48" rx="10"/>
+<text class="lane" x="1075" y="158" text-anchor="middle">stock</text>
+<path class="hair" d="M460 176V676M610 176V676M760 176V420M915 176V548M1075 176V612"/>
+<path class="hair" d="M66 216V664"/>
+<circle class="dot" cx="66" cy="216" r="15"/><text class="num" x="66" y="221" text-anchor="middle">1</text>
+<text class="label b t-ink" x="96" y="212">Gateway starts the trace</text>
+<text class="sub" x="96" y="232">2 s deadline for the request</text>
+<path class="sync" d="M460 216H610"/>
+<text class="label t-accent" x="476" y="206">POST /search</text>
+<circle class="dot" cx="66" cy="280" r="15"/><text class="num" x="66" y="285" text-anchor="middle">2</text>
+<text class="label b t-ink" x="96" y="276">It calls search once</text>
+<text class="sub" x="96" y="296">min(1.8 s, remaining - 50 ms)</text>
+<path class="sync" d="M610 280H760"/>
+<text class="label t-accent" x="626" y="270">1.8 s</text>
+<circle class="dot-w" cx="66" cy="344" r="15"/><text class="num" x="66" y="349" text-anchor="middle">2x</text>
+<text class="label b t-warn" x="96" y="340">At the limit: 503 at once</text>
+<text class="sub" x="96" y="360">Retry-After: 1, no queue</text>
+<path class="fail" d="M760 344H610"/>
+<text class="label t-warn" x="626" y="334">503</text>
+<circle class="dot" cx="66" cy="408" r="15"/><text class="num" x="66" y="413" text-anchor="middle">3</text>
+<text class="label b t-ink" x="96" y="404">Search asks pricing once</text>
+<text class="sub" x="96" y="424">one attempt, no retry</text>
+<path class="sync" d="M760 408H915"/>
+<text class="label t-accent" x="776" y="398">1.2 s</text>
+<circle class="dot" cx="66" cy="472" r="15"/><text class="num" x="66" y="477" text-anchor="middle">4</text>
+<text class="label b t-ink" x="96" y="468">Pricing asks stock once</text>
+<text class="sub" x="96" y="488">breaker closed: one attempt</text>
+<path class="sync" d="M915 472H1075"/>
+<text class="label t-accent" x="931" y="462">0.7 s</text>
+<circle class="dot-w" cx="66" cy="536" r="15"/><text class="num" x="66" y="541" text-anchor="middle">4x</text>
+<text class="label b t-warn" x="96" y="532">Breaker open or stock slow</text>
+<text class="sub" x="96" y="552">last known price, flagged stale</text>
+<rect class="slot" x="909" y="518" width="12" height="36" rx="4"/>
+<text class="label t-warn" x="931" y="541">stale price</text>
+<circle class="dot" cx="66" cy="600" r="15"/><text class="num" x="66" y="605" text-anchor="middle">5</text>
+<text class="label b t-ink" x="96" y="596">Stock answers or sends 504</text>
+<text class="sub" x="96" y="616">capacity 16, SQL read</text>
+<rect class="slot" x="1069" y="582" width="12" height="36" rx="4"/>
+<text class="label t-accent" x="1059" y="605" text-anchor="end">wait, read</text>
+<circle class="dot-g" cx="66" cy="664" r="15"/><text class="num" x="66" y="669" text-anchor="middle">6</text>
+<text class="label b t-ink" x="96" y="660">The answer comes back up</text>
+<text class="sub" x="96" y="680">a degraded 200, not an error</text>
+<path class="ok" d="M610 664H460"/>
+<text class="label t-good" x="476" y="654">answer</text>
+<rect class="slot" x="604" y="646" width="12" height="36" rx="4"/>
+<path class="ok" d="M622 664H760"/>
+<rect class="win" x="760" y="644" width="248" height="40" rx="10"/>
+<text class="label b t-good" x="776" y="669">0% errors, 100% degraded</text>
+<path class="sync" d="M48 752H112"/><text class="legend" x="124" y="757">sync call</text>
+<path class="fail" d="M696 752H760"/><text class="legend" x="772" y="757">failure path</text>
+<path class="ok" d="M928 752H992"/><text class="legend" x="1004" y="757">result</text>
+</svg>

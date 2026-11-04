@@ -6,6 +6,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ### Added
 
+- Drawn architecture and flow figures in `docs/diagrams/`, light and dark, shown in the README.
 - `tech/`: one note per technology the repository uses, from zero, with an index.
 
 ### Fixed
