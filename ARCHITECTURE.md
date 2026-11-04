@@ -28,8 +28,9 @@ flowchart LR
     prc -->|traceparent, X-Deadline-Ms| stk[stock<br/>capacity 16<br/>latency and errors injected]
     stk --> db[(stock DB)]
     prc -. breaker open or error .-> cache[last known price]
-    exp([experiment]) -->|/admin/profile<br/>/admin/config| gw
-    exp -->|/metrics<br/>/admin/traces| stk
+    exp([experiment]) -->|/admin/profile| gw & sch & prc
+    exp -->|/admin/config| stk
+    exp -->|/metrics<br/>/admin/traces| gw & sch & prc & stk
 ```
 
 One request under the full profile:

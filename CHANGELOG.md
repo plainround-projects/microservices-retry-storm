@@ -11,6 +11,7 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ### Fixed
 
+- ARCHITECTURE.md and README now match the code where they disagreed (see the drawn figures).
 - `make help` printed descriptions without target names.
 
 ## [0.1.0] - 2026-10-27
